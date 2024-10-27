@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Welcome to the Chatbot!</h1>
+        <div id="chat-window">
+            <div id="messages"></div>
+        </div>
+        <form action="/chat" method="get" id="chat-form">
+            <input type="text" name="message" placeholder="Your message" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById("chat-form");
+        const messagesDiv = document.getElementById("messages");
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const message = form.message.value;
+
+            // Add user message to chat
+            messagesDiv.innerHTML += `<div class="user-message"><strong>You:</strong> ${message}</div>`;
+
+            const res = await fetch(`/chat?message=${encodeURIComponent(message)}`);
+            const data = await res.json();
+
+            // Add bot's response to chat
+            messagesDiv.innerHTML += `<div class="bot-message"><strong>Bot:</strong> ${data.response}</div>`;
+            form.reset();
+
+            // Scroll to bottom
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        };
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #chat-window {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        #messages {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-message {
+            background-color: #e1ffc7;
+            border-radius: 5px;
+            padding: 8px;
+            margin: 5px 0;
+            align-self: flex-end;
+        }
+
+        .bot-message {
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            padding: 8px;
+            margin: 5px 0;
+            align-self: flex-start;
+        }
+
+        form {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</body>
+
+</html>
